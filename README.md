@@ -1,4 +1,4 @@
-# standard-R-output
+# standard-print-output
 An R library to output ggplot graphs and huxtable tables in a standard publication friendly format
 
 
