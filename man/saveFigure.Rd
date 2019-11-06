@@ -2,12 +2,16 @@
 % Please edit documentation in R/ggplotUtils.R
 \name{saveFigure}
 \alias{saveFigure}
-\title{A standard plot for publication}
+\title{Saves standard plots for publication either as EPS, PNG with 300dpi or PDF
+Allows specific maximum dimensions with an optional target aspect ratio.
+If no aspect ratio supplied then plot will be shaped to occupy whole area}
 \usage{
-saveFigure(filename, maxWidth, maxHeight,
-  aspectRatio = maxWidth/maxHeight, plot = last_plot())
+saveFigure(plot = last_plot(), filename, maxWidth, maxHeight,
+  aspectRatio = maxWidth/maxHeight)
 }
 \arguments{
+\item{plot}{a GGplot object or none}
+
 \item{filename}{base of target filename (excuding extension).}
 
 \item{maxWidth}{maximum width in inches}
@@ -15,13 +19,17 @@ saveFigure(filename, maxWidth, maxHeight,
 \item{maxHeight}{maximum height in inches}
 
 \item{aspectRatio}{defaults to maxWidth/maxHeight}
-
-\item{plot}{a GGplot object or none}
 }
 \description{
-A standard plot for publication
+Saves standard plots for publication either as EPS, PNG with 300dpi or PDF
+Allows specific maximum dimensions with an optional target aspect ratio.
+If no aspect ratio supplied then plot will be shaped to occupy whole area
 }
 \examples{
-saveFigure("the_filename",maxWidth=4,maxHeight=4,plot=ggplot())
+setwd(tempdir())
+library(ggplot2)
+library(standardPrintOutput)
+ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+saveFigure("the_filename",maxWidth=4,maxHeight=4)
 }
 \keyword{plot}

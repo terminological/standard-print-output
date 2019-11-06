@@ -2,21 +2,27 @@
 % Please edit documentation in R/ggplotUtils.R
 \name{saveSixthPageFigure}
 \alias{saveSixthPageFigure}
-\title{A standard max 3x3 plot size for a page}
+\title{A standard max 3x3 plot size for a smaller plot
+maybe combined with narrowAndTall()}
 \usage{
-saveSixthPageFigure(filename, ...)
+saveSixthPageFigure(plot = last_plot(), filename, ...)
 }
 \arguments{
+\item{plot}{a GGplot object or none}
+
 \item{filename}{base of target filename (excuding extension).}
 
-\item{...}{passed to saveThesis()}
-
-\item{plot}{a GGplot object or none}
+\item{...}{passed to saveFigure()}
 }
 \description{
-A standard max 3x3 plot size for a page
+A standard max 3x3 plot size for a smaller plot
+maybe combined with narrowAndTall()
 }
 \examples{
-saveThesisSixthPage("the_filename",ggplot())
+setwd(tempdir())
+library(ggplot2)
+library(standardPrintOutput)
+ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+saveSixthPageFigure("the_filename")
 }
 \keyword{axes}

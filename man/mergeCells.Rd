@@ -13,6 +13,7 @@ mergeCells(labelledDataFrame)
 prepare a huxtable with cells merged according to grouped colums
 }
 \examples{
+setwd(tempdir())
 mergeCells(iris \%>\% group_by(Species,Petal.Width) \%>\% summarise(count = n()))
 mergeCells(mtcars \%>\% rownames_to_column() \%>\% group_by(gear,carb))
 mtcars \%>\% rownames_to_column() \%>\% group_by(gear,carb) \%>\% mergeCells() \%>\% saveTable("cars")

@@ -13,6 +13,6 @@ defaultTableLayout(hux)
 Once copied and pasted table needs to have leading spaces removed in google docs
 }
 \examples{
-huxtable(dataframe \%>\% select("col 1 title"=col1)) \%>\% defaultTableLayout()
+hux <- huxtable(dataframe \%>\% select("col 1 title"=col1)) \%>\% defaultTableLayout()
 }
 \keyword{huxtable}

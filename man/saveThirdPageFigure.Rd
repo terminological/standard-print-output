@@ -4,19 +4,23 @@
 \alias{saveThirdPageFigure}
 \title{A standard max 6x3 plot size for a third page}
 \usage{
-saveThirdPageFigure(filename, ...)
+saveThirdPageFigure(plot = last_plot(), filename, ...)
 }
 \arguments{
+\item{plot}{a GGplot object or none}
+
 \item{filename}{base of target filename (excuding extension).}
 
-\item{...}{passed to saveThesis()}
-
-\item{plot}{a GGplot object or none}
+\item{...}{passed to saveFigure()}
 }
 \description{
 A standard max 6x3 plot size for a third page
 }
 \examples{
-saveThirdPageFigure("the_filename",ggplot())
+setwd(tempdir())
+library(ggplot2)
+library(standardPrintOutput)
+ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+saveThirdPageFigure("the_filename")
 }
 \keyword{axes}

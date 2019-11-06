@@ -10,7 +10,9 @@ narrowAndTall()
 A ggplot theme modification for graphs that need to be narrower and taller than defaults
 }
 \examples{
-ggplot()+narrowAndTall()
+library(ggplot2)
+library(standardPrintOutput)
+ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point() + narrowAndTall()
 }
 \keyword{graph}
 \keyword{layout}

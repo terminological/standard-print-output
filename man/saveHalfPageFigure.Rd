@@ -4,19 +4,23 @@
 \alias{saveHalfPageFigure}
 \title{A standard max 6x4 inch plot size for a half page}
 \usage{
-saveHalfPageFigure(filename, ...)
+saveHalfPageFigure(plot = last_plot(), filename, ...)
 }
 \arguments{
+\item{plot}{a GGplot object or none}
+
 \item{filename}{base of target filename (excuding extension).}
 
-\item{...}{passed to saveThesis()}
-
-\item{plot}{a GGplot object or none}
+\item{...}{passed to saveFigure()}
 }
 \description{
 A standard max 6x4 inch plot size for a half page
 }
 \examples{
-saveHalfPageFigure("the_filename",ggplot())
+setwd(tempdir())
+library(ggplot2)
+library(standardPrintOutput)
+ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+saveHalfPageFigure("the_filename")
 }
 \keyword{axes}
