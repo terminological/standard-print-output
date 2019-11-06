@@ -30,6 +30,6 @@ setwd(tempdir())
 library(ggplot2)
 library(standardPrintOutput)
 ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-saveFigure("the_filename",maxWidth=4,maxHeight=4)
+saveFigure(filename="the_filename",maxWidth=4,maxHeight=4)
 }
 \keyword{plot}

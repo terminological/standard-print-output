@@ -21,6 +21,6 @@ setwd(tempdir())
 library(ggplot2)
 library(standardPrintOutput)
 ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-saveHalfPageFigure("the_filename")
+saveHalfPageFigure(filename="the_filename")
 }
 \keyword{axes}

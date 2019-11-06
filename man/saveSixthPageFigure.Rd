@@ -23,6 +23,6 @@ setwd(tempdir())
 library(ggplot2)
 library(standardPrintOutput)
 ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-saveSixthPageFigure("the_filename")
+saveSixthPageFigure(filename="the_filename")
 }
 \keyword{axes}

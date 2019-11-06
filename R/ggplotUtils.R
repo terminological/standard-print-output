@@ -101,7 +101,7 @@ scale_month_discrete <- function() {
 #' library(ggplot2)
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-#' saveFigure("the_filename",maxWidth=4,maxHeight=4)
+#' saveFigure(filename="the_filename",maxWidth=4,maxHeight=4)
 saveFigure <- function(plot = last_plot(),filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxHeight) {
   if (!capabilities()["cairo"] ) {
     stop("Needs cairo to work")
@@ -127,7 +127,7 @@ saveFigure <- function(plot = last_plot(),filename,maxWidth,maxHeight,aspectRati
 #' library(ggplot2)
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-#' saveFullPageFigure("the_filename")
+#' saveFullPageFigure(filename="the_filename")
 saveFullPageFigure = function(plot = last_plot(),filename, ...) {
   saveFigure(plot,filename,maxWidth=5.9, maxHeight=8, ...)
 }
@@ -145,7 +145,7 @@ saveFullPageFigure = function(plot = last_plot(),filename, ...) {
 #' library(ggplot2)
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-#' saveHalfPageFigure("the_filename")
+#' saveHalfPageFigure(filename="the_filename")
 saveHalfPageFigure = function(plot = last_plot(),filename, ...) {
   saveFigure(plot,filename,maxWidth=5.9, maxHeight=4, ...)
 }
@@ -163,7 +163,7 @@ saveHalfPageFigure = function(plot = last_plot(),filename, ...) {
 #' library(ggplot2)
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-#' saveThirdPageFigure("the_filename")
+#' saveThirdPageFigure(filename="the_filename")
 saveThirdPageFigure = function(plot = last_plot(),filename, ...) {
   saveFigure(plot,filename,maxWidth=5.9, maxHeight=3, ...)
 }
@@ -182,7 +182,7 @@ saveThirdPageFigure = function(plot = last_plot(),filename, ...) {
 #' library(ggplot2)
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-#' saveSixthPageFigure("the_filename")
+#' saveSixthPageFigure(filename="the_filename")
 saveSixthPageFigure = function(plot = last_plot(),filename, ...) {
   saveFigure(plot,filename,maxWidth=3, maxHeight=3, ...)
 }
