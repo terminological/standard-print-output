@@ -71,9 +71,11 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
 
   # tableWidth = tableWidth-(ncol(tmp)*0.1) # adjust for
   write(
+    paste0("<html><head><meta charset='UTF-8'></head><body>",
     stringr::str_remove(
       tmp %>% to_html(),
-      stringr::fixed("margin-bottom: 2em; margin-top: 2em;")
+      stringr::fixed("margin-bottom: 2em; margin-top: 2em;")),
+    "</body></html>"
     ),
     file=normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
   
