@@ -90,7 +90,7 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
     file=normalizePath(paste0(filename,".pdf"),mustWork = FALSE),
     vwidth=pageWidth*72,vheight=10)
 
-  # fs::file_delete(normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
+  fs::file_delete(normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
   
 }
 
