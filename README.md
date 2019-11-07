@@ -24,6 +24,9 @@ PDF rotation is provided by pdftk
 https://www.pdflabs.com/tools/pdftk-server/
 http://manpages.ubuntu.com/manpages/xenial/man1/pdftk.1.html
 
+```Bash
+sudo apt-get install libcairo2-dev libmagick++-dev pdftk
+```
 
 ### setup instructions for Arial on ubuntu
 
