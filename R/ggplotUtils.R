@@ -106,10 +106,16 @@ saveFigure <- function(plot = last_plot(),filename,maxWidth,maxHeight,aspectRati
   if (!capabilities()["cairo"] ) {
     stop("Needs cairo to work")
   }
-  ggplot2::ggsave(paste0(filename,".pdf"), plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_pdf);
-  ggplot2::ggsave(paste0(filename,".png"), plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), dpi=300, type = "cairo");
-  ggplot2::ggsave(paste0(filename,".eps"), plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_ps);
-  embedFonts(paste0(filename,".pdf"));
+  ggplot2::ggsave(
+    normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
+    plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_pdf);
+  ggplot2::ggsave(
+    normalizePath(paste0(filename,".png"),mustWork = FALSE), 
+    plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), dpi=300, type = "cairo");
+  ggplot2::ggsave(
+    normalizePath(paste0(filename,".eps"),mustWork = FALSE), 
+    plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_ps);
+  embedFonts(normalizePath(paste0(filename,".pdf"),mustWork = FALSE));
   # embedFonts(paste0(filename,".eps"));
 }
 

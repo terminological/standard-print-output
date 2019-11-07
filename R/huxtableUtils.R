@@ -59,11 +59,13 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
   }
   
   write(
+    paste0("<html><head><meta charset='UTF-8'></head><body>",
     stringr::str_remove(
       tmp %>% to_html(),
-      stringr::fixed("margin-bottom: 2em; margin-top: 2em;")
+      stringr::fixed("margin-bottom: 2em; margin-top: 2em;")),
+    "</body></html>"
     ),
-    file=paste0(filename,'.html'))
+    file=normalizePath(paste0(filename,".html"),mustWork = FALSE))
   
   attr(tmp,"font_size") <- ifelse(is.na(attr(tmp,"font_size")),defaultFontSize,attr(tmp,"font_size"))*2/3
 
@@ -73,18 +75,20 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
       tmp %>% to_html(),
       stringr::fixed("margin-bottom: 2em; margin-top: 2em;")
     ),
-    file=paste0(filename,'.tmp.html'))
+    file=normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
   
   webshot::webshot(
-    url=paste0("file://",getwd(),"/",filename,".html"),
-    file=paste0(filename,'.png'),vwidth=pageWidth*96,vheight=10,zoom=300/96)
+    url=paste0("file://",normalizePath(paste0(filename,".html"),mustWork = FALSE)),
+    file=normalizePath(paste0(filename,".png"),mustWork = FALSE),
+    vwidth=pageWidth*96,vheight=10,zoom=300/96)
   # webshot::resize(paste0(filename,'.png'),paste0(96/300*100,"%"))
   
   webshot::webshot(
-    url=paste0("file://",getwd(),"/",filename,".tmp.html"),
-    file=paste0(filename,'.pdf'),vwidth=pageWidth*72,vheight=10)
+    url=paste0("file://",normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE)),
+    file=normalizePath(paste0(filename,".pdf"),mustWork = FALSE),
+    vwidth=pageWidth*72,vheight=10)
 
-  fs::file_delete(paste0(filename,'.tmp.html'))
+  fs::file_delete(normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
   
 }
 
@@ -104,8 +108,16 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
 #' hux(iris) %>% saveTableLandscape("iris")
 saveTableLandscape = function(labelledDataframe, filename, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   saveTable(labelledDataFrame, filename, pageLength, defaultFontSize, tableWidth, colWidths)
-  staplr::rotate_pdf(page_rotation = 270, input_filepath = paste0(filename,".pdf"), output_filepath = paste0(filename,".pdf"), overwrite = TRUE)
-  magick::image_rotate(magick::image_read(paste0(filename,".png")),270) %>% magick::image_write(paste0(filename,".png"))
+  staplr::rotate_pdf(page_rotation = 270, 
+                     input_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
+                     output_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
+                     overwrite = TRUE)
+  magick::image_rotate(
+      magick::image_read(
+        normalizePath(paste0(filename,".png"),mustWork = FALSE)
+        ),270) %>% magick::image_write(
+          normalizePath(paste0(filename,".png"),mustWork = FALSE)
+          )
 }
 
 #' prepare a huxtable with cells merged according to grouped colums
@@ -213,14 +225,16 @@ saveMultiPage <- function(labelledDataFrame, filename, pageWidth=5.9, pageLength
 saveMultiPageLandscape <- function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   pdfs = saveMultiPage(labelledDataFrame, filename, pageLength, pageWidth, defaultFontSize, tableWidth, colWidths)
   for (filename in pdfs) {
-    pdf = paste0(filename,".pdf")
-    png = paste0(filename,".png")
+    pdf = normalizePath(paste0(filename,".pdf"),mustWork = FALSE)
+    png = normalizePath(paste0(filename,".png"),mustWork = FALSE)
     staplr::rotate_pdf(page_rotation = 270, input_filepath = pdf,output_filepath = pdf, overwrite = TRUE)
     magick::image_rotate(magick::image_read(png),270) %>% magick::image_write(png)
   }
 }
 
 .detectHeight <- function(filename, width) {
-  img.n=png::readPNG(paste0(filename,".png"),info=TRUE)
+  img.n=png::readPNG(
+    normalizePath(paste0(filename,".png"),mustWork = FALSE),
+    info=TRUE)
   return(attr(img.n,"info")$dim[2]/attr(img.n,"info")$dim[1]*width)
 }
