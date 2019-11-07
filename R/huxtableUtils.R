@@ -9,7 +9,7 @@
 #' @examples
 #' hux <- huxtable(dataframe %>% select("col 1 title"=col1)) %>% defaultTableLayout()
 defaultTableLayout = function(hux) {
-  if(!("Arial" %in% fonts())) {
+  if(!("Arial" %in% extrafont::fonts())) {
     stop("Arial is not installed")
   }
   # return( theme_article(...) %>%
