@@ -20,6 +20,11 @@ https://imagemagick.org/script/download.php
 Cairo installation is required:
 https://www.cairographics.org/download/
 
+PDF rotation is provided by pdftk
+https://www.pdflabs.com/tools/pdftk-server/
+http://manpages.ubuntu.com/manpages/xenial/man1/pdftk.1.html
+
+
 ### setup instructions for Arial on ubuntu
 
 Arial fonts must be available on the system. This is less than simple on Linux.
