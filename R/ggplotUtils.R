@@ -7,20 +7,21 @@
 #' @examples
 #' ggplot()+scale_week_continuous()
 scale_week_continuous <- function() {
-  return(geom_vline(xintercept = 0, colour='grey')+
-           geom_vline(xintercept = 24, colour='grey')+
-           geom_vline(xintercept = 48, colour='grey')+
-           geom_vline(xintercept = 72, colour='grey')+
-           geom_vline(xintercept = 96, colour='grey')+
-           geom_vline(xintercept = 120, colour='grey')+
-           geom_vline(xintercept = 144, colour='grey')+
-           geom_vline(xintercept = 168, colour='grey')+
-           xlab("time of week") +
+  return(list(
+	geom_vline(xintercept = 0, colour='grey'),
+           geom_vline(xintercept = 24, colour='grey'),
+           geom_vline(xintercept = 48, colour='grey'),
+           geom_vline(xintercept = 72, colour='grey'),
+           geom_vline(xintercept = 96, colour='grey'),
+           geom_vline(xintercept = 120, colour='grey'),
+           geom_vline(xintercept = 144, colour='grey'),
+           geom_vline(xintercept = 168, colour='grey'),
+           xlab("time of week"),
            scale_x_continuous(breaks = seq(0, 24*7, 12), labels = c(
              'Mon 00:00','Mon 12:00','Tue 00:00','Tue 12:00','Wed 00:00','Wed 12:00','Thu 00:00','Thu 12:00','Fri 00:00','Fri 12:00',
-             'Sat 00:00','Sat 12:00','Sun 00:00','Sun 12:00','Mon 00:00'))+
+             'Sat 00:00','Sat 12:00','Sun 00:00','Sun 12:00','Mon 00:00')),
            theme(axis.text.x=element_text(angle = 45, hjust = 1))
-  )
+  ))
 }
 
 #' A standard X axis with hour from midnight
@@ -31,10 +32,10 @@ scale_week_continuous <- function() {
 #' @examples
 #' ggplot()+scale_hours_continuous()
 scale_hours_continuous <- function() {
-  return(
-    xlab("hours from midnight") +
+  return(list(
+    xlab("hours from midnight"),
     scale_x_continuous(breaks = seq(0, 24, 1))
-  );
+  ));
 }
 
 #' A standard X axis of months of year where data is a 'MM-DD' formatted date object
@@ -45,12 +46,12 @@ scale_hours_continuous <- function() {
 #' @examples
 #' ggplot()+scale_day_of_year_discrete()
 scale_day_of_year_discrete <- function() {
-  return(
-    xlab("day of year")+
+  return(list(
+    xlab("day of year"),
     scale_x_discrete(breaks =
         c('01-01','02-01','03-01','04-01','05-01','06-01','07-01','08-01','09-01','10-01','11-01','12-01'),
         labels = c('Jan','Feb','Mar','Apr','May','June','July','Aug','Sep','Oct','Nov','Dec'))
-  );
+  ));
 }
 
 #' A standard X axis of months of year where data is a 'MM' formatted date object
@@ -61,12 +62,12 @@ scale_day_of_year_discrete <- function() {
 #' @examples
 #' ggplot()+scale_month_discrete()
 scale_month_discrete <- function() {
-  return(
-           xlab("month of year")+
+  return(list(
+           xlab("month of year"),
            scale_x_discrete(breaks =
                 c('01','02','03','04','05','06','07','08','09','10','11','12'),
                 labels = c('Jan','Feb','Mar','Apr','May','June','July','Aug','Sep','Oct','Nov','Dec'))
-  );
+  ));
 }
 
 
