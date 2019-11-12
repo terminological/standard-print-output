@@ -18,7 +18,7 @@ scale_week_continuous <- function() {
            xlab("time of week") +
            scale_x_continuous(breaks = seq(0, 24*7, 12), labels = c(
              'Mon 00:00','Mon 12:00','Tue 00:00','Tue 12:00','Wed 00:00','Wed 12:00','Thu 00:00','Thu 12:00','Fri 00:00','Fri 12:00',
-             'Sat 00:00','Sat 12:00','Sun 00:00','Sun 12:00'))+
+             'Sat 00:00','Sat 12:00','Sun 00:00','Sun 12:00','Mon 00:00'))+
            theme(axis.text.x=element_text(angle = 45, hjust = 1))
   )
 }
