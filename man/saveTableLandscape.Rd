@@ -4,8 +4,14 @@
 \alias{saveTableLandscape}
 \title{save labelled dataframe to html and pdf file silently in rotated format for a landscape page}
 \usage{
-saveTableLandscape(labelledDataframe, filename, pageLength = 8,
-  defaultFontSize = 10, tableWidth = NULL, colWidths = NULL)
+saveTableLandscape(
+  labelledDataframe,
+  filename,
+  pageLength = 8,
+  defaultFontSize = 10,
+  tableWidth = NULL,
+  colWidths = NULL
+)
 }
 \arguments{
 \item{filename}{file of desired output without extension.}

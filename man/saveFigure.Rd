@@ -6,8 +6,13 @@
 Allows specific maximum dimensions with an optional target aspect ratio.
 If no aspect ratio supplied then plot will be shaped to occupy whole area}
 \usage{
-saveFigure(plot = last_plot(), filename, maxWidth, maxHeight,
-  aspectRatio = maxWidth/maxHeight)
+saveFigure(
+  plot = last_plot(),
+  filename,
+  maxWidth,
+  maxHeight,
+  aspectRatio = maxWidth/maxHeight
+)
 }
 \arguments{
 \item{plot}{a GGplot object or none}

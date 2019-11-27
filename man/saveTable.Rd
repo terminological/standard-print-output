@@ -4,8 +4,14 @@
 \alias{saveTable}
 \title{save labelled dataframe to html and pdf file silently}
 \usage{
-saveTable(labelledDataframe, filename, pageWidth = 5.9,
-  defaultFontSize = 10, tableWidth = NULL, colWidths = NULL)
+saveTable(
+  labelledDataframe,
+  filename,
+  pageWidth = 5.9,
+  defaultFontSize = 10,
+  tableWidth = NULL,
+  colWidths = NULL
+)
 }
 \arguments{
 \item{filename}{file of desired output without extension.}

@@ -139,6 +139,34 @@ saveFullPageFigure = function(plot = last_plot(),filename, ...) {
   saveFigure(plot,filename,maxWidth=5.9, maxHeight=8, ...)
 }
 
+#' A standard 6x8 inch plot size for a full page in landscape format
+#'
+#' @param filename base of target filename (excuding extension).
+#' @param plot a GGplot object or none
+#' @param ... passed to saveFigure()
+#' @keywords axes
+#' @import ggplot2
+#' @export
+#' @examples
+#' setwd(tempdir())
+#' library(ggplot2)
+#' library(standardPrintOutput)
+#' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+#' saveFullPageLandscapeFigure(filename="the_filename")
+saveFullPageFigure = function(plot = last_plot(),filename, ...) {
+  saveFigure(plot,filename,maxWidth=8, maxHeight=5.9, ...)
+  staplr::rotate_pdf(page_rotation = 270, 
+                   input_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
+                   output_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
+                   overwrite = TRUE)
+  magick::image_rotate(
+    magick::image_read(
+      normalizePath(paste0(filename,".png"),mustWork = FALSE)
+    ),270) %>% magick::image_write(
+      normalizePath(paste0(filename,".png"),mustWork = FALSE)
+    )
+}
+
 #' A standard max 6x4 inch plot size for a half page
 #'
 #' @param filename base of target filename (excuding extension).
@@ -259,3 +287,14 @@ watermark = function(show = TRUE, lab = "DRAFT") {
   }
 }
 
+#' A fix geom_text sizes to be in the correct size for pdf export
+#' 
+#' @keywords graph layout
+#' @import ggplot2
+#' @export
+#' @param pts size of text in points
+#' @examples
+#' ...+geom_label_repel(size=labelInPoints(10))
+labelInPoints = function(pts) {
+  return (pts/ggplot2:::.pt/(96/72))
+}

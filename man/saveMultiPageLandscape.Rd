@@ -4,9 +4,15 @@
 \alias{saveMultiPageLandscape}
 \title{format a dataframe into a multi page table that is landscape in orientation}
 \usage{
-saveMultiPageLandscape(labelledDataFrame, filename, pageWidth = 5.9,
-  pageLength = 8, defaultFontSize = 10, tableWidth = NULL,
-  colWidths = NULL)
+saveMultiPageLandscape(
+  labelledDataFrame,
+  filename,
+  pageWidth = 5.9,
+  pageLength = 8,
+  defaultFontSize = 10,
+  tableWidth = NULL,
+  colWidths = NULL
+)
 }
 \arguments{
 \item{filename}{file of desired output without extension.}

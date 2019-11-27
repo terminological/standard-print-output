@@ -6,9 +6,15 @@
 best not to use a huxtable object with merged cells as thes will get merged.
 Data frame needs to be ordered and grouped if it is to be split accross pages}
 \usage{
-saveMultiPage(labelledDataFrame, filename, pageWidth = 5.9,
-  pageLength = 8, defaultFontSize = 10, tableWidth = NULL,
-  colWidths = NULL)
+saveMultiPage(
+  labelledDataFrame,
+  filename,
+  pageWidth = 5.9,
+  pageLength = 8,
+  defaultFontSize = 10,
+  tableWidth = NULL,
+  colWidths = NULL
+)
 }
 \arguments{
 \item{filename}{file of desired output without extension.}
