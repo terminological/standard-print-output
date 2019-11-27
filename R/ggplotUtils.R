@@ -153,7 +153,7 @@ saveFullPageFigure = function(plot = last_plot(),filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveFullPageLandscapeFigure(filename="the_filename")
-saveFullPageFigure = function(plot = last_plot(),filename, ...) {
+saveFullPageFigureLandscape = function(plot = last_plot(),filename, ...) {
   saveFigure(plot,filename,maxWidth=8, maxHeight=5.9, ...)
   staplr::rotate_pdf(page_rotation = 270, 
                    input_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
@@ -162,9 +162,11 @@ saveFullPageFigure = function(plot = last_plot(),filename, ...) {
   magick::image_rotate(
     magick::image_read(
       normalizePath(paste0(filename,".png"),mustWork = FALSE)
-    ),270) %>% magick::image_write(
-      normalizePath(paste0(filename,".png"),mustWork = FALSE)
     )
+    ,270
+  ) %>% magick::image_write(
+    normalizePath(paste0(filename,".png"),mustWork = FALSE)
+  )
 }
 
 #' A standard max 6x4 inch plot size for a half page
