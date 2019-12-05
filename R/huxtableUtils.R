@@ -136,7 +136,7 @@ saveTableLandscape = function(labelledDataframe, filename, pageLength=8, default
 #' mtcars %>% rownames_to_column() %>% group_by(gear,carb) %>% mergeCells() %>% saveTable("cars")
 mergeCells = function(labelledDataFrame) {
   grps = labelledDataFrame %>% groups()
-  cols = lapply(colnames(groupedDf),as.symbol)
+  cols = lapply(colnames(labelledDataFrame),as.symbol)
   sel = c(grps,cols[!cols %in% grps])
   hux = defaultTableLayout(huxtable(labelledDataFrame %>% arrange(!!!grps) %>% select(!!!sel),add_colnames = TRUE))
   tmpHux = hux
