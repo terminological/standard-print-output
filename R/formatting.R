@@ -7,7 +7,7 @@
 #' @examples
 #' df %>% mutate(display = twoDp(x))
 #' df %>% mutate(display = twoDp(x,"km"))
-twoDp <- function(x,unit="") {
+twoDp = function(x,unit="") {
   paste0(sprintf("%.2f",x),unit)
 }
 
@@ -20,7 +20,7 @@ twoDp <- function(x,unit="") {
 #' @examples
 #' df %>% mutate(display = threeDp(x))
 #' df %>% mutate(display = threeDp(x,"mm"))
-threeDp <- function(x,unit="") {
+threeDp = function(x,unit="") {
   paste0(sprintf("%.3f",x),unit)
 }
 
@@ -33,7 +33,7 @@ threeDp <- function(x,unit="") {
 #' @examples
 #' df %>% mutate(display = fourDp(x))
 #' df %>% mutate(display = fourDp(x,"%"))
-fourDp <- function(x,unit="") {
+fourDp = function(x,unit="") {
   paste0(sprintf("%.4f",x),unit)
 }
 
@@ -46,8 +46,8 @@ fourDp <- function(x,unit="") {
 #' @examples
 #' df %>% mutate(display = meanAndConfidence(x))
 #' df %>% mutate(display = meanAndConfidence(x,fourDp,unit="cm"))
-meanAndConfidence <- function(x, f=twoDp, ...) {
-  tmp <- t.test(x)
+meanAndConfidence = function(x, f=twoDp, ...) {
+  tmp = t.test(x)
   return(paste0(f(tmp$estimate[["mean of x"]],...)," (95% CI: ",f(tmp$conf.int[1],...),", ",f(tmp$conf.int[2],...),")"))
 }
 
@@ -59,7 +59,7 @@ meanAndConfidence <- function(x, f=twoDp, ...) {
 #' @export
 #' @examples
 #' df %>% mutate(display = confidence(x))
-confidence <- function(x, f=twoDp, ...) {
-  tmp <- t.test(x)
+confidence = function(x, f=twoDp, ...) {
+  tmp = t.test(x)
   return(paste0(f(tmp$conf.int[1],...)," — ",f(tmp$conf.int[2],...)))
 }

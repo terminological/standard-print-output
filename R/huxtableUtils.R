@@ -7,7 +7,7 @@
 #' @import huxtable
 #' @export
 #' @examples
-#' hux <- huxtable(dataframe %>% select("col 1 title"=col1)) %>% defaultTableLayout()
+#' hux = huxtable(dataframe %>% select("col 1 title"=col1)) %>% defaultTableLayout()
 defaultTableLayout = function(hux) {
   if(!("Arial" %in% extrafont::fonts())) {
     stop("Arial is not installed")
@@ -44,18 +44,18 @@ defaultTableLayout = function(hux) {
 #' hux(iris) %>% saveTable("iris")
 saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   if (is_hux(labelledDataframe)) {
-    tmp <- labelledDataframe
+    tmp = labelledDataframe
   } else {
-    tmp <- mergeCells(labelledDataframe)
+    tmp = mergeCells(labelledDataframe)
   }
-  # if (!is.null(caption)) tmp <- tmp %>% set_caption(caption)
+  # if (!is.null(caption)) tmp = tmp %>% set_caption(caption)
   if (!is.null(colWidths)) {
-    tmp <- tmp %>% set_col_width(everywhere,value=colWidths)
+    tmp = tmp %>% set_col_width(everywhere,value=colWidths)
   }
   if (!is.null(tableWidth)) {
-    tmp <- tmp %>% set_width(tableWidth/pageWidth)
+    tmp = tmp %>% set_width(tableWidth/pageWidth)
   } else {
-    tmp <- tmp %>% set_width("auto")
+    tmp = tmp %>% set_width("auto")
   }
   
   write(
@@ -67,7 +67,7 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
     ),
     file=normalizePath(paste0(filename,".html"),mustWork = FALSE))
   
-  attr(tmp,"font_size") <- ifelse(is.na(attr(tmp,"font_size")),defaultFontSize,attr(tmp,"font_size"))*2/3
+  attr(tmp,"font_size") = ifelse(is.na(attr(tmp,"font_size")),defaultFontSize,attr(tmp,"font_size"))*2/3
 
   # tableWidth = tableWidth-(ncol(tmp)*0.1) # adjust for
   write(
@@ -117,9 +117,9 @@ saveTableLandscape = function(labelledDataframe, filename, pageLength=8, default
   magick::image_rotate(
       magick::image_read(
         normalizePath(paste0(filename,".png"),mustWork = FALSE)
-        ),270) %>% magick::image_write(
-          normalizePath(paste0(filename,".png"),mustWork = FALSE)
-          )
+      ),270) %>% magick::image_write(
+        normalizePath(paste0(filename,".png"),mustWork = FALSE)
+      )
 }
 
 #' prepare a huxtable with cells merged according to grouped colums
@@ -135,10 +135,10 @@ saveTableLandscape = function(labelledDataframe, filename, pageLength=8, default
 #' mergeCells(mtcars %>% rownames_to_column() %>% group_by(gear,carb))
 #' mtcars %>% rownames_to_column() %>% group_by(gear,carb) %>% mergeCells() %>% saveTable("cars")
 mergeCells = function(labelledDataFrame) {
-  grps <- labelledDataFrame %>% groups()
+  grps = labelledDataFrame %>% groups()
   cols = lapply(colnames(groupedDf),as.symbol)
-  sel <- c(grps,cols[!cols %in% grps])
-  hux <- defaultTableLayout(huxtable(labelledDataFrame %>% arrange(!!!grps) %>% select(!!!sel),add_colnames = TRUE))
+  sel = c(grps,cols[!cols %in% grps])
+  hux = defaultTableLayout(huxtable(labelledDataFrame %>% arrange(!!!grps) %>% select(!!!sel),add_colnames = TRUE))
   tmpHux = hux
   for (colname in colnames(hux)) {
     if (colname %in% grps) {
@@ -155,9 +155,9 @@ mergeCells = function(labelledDataFrame) {
           l = s[firsts][i]
           r = s[lasts][i]
           lr = seq(l,r)
-          tmpHux <- merge_cells(tmpHux, lr, colindex)
-          tmpHux <- set_valign(tmpHux,lr,colindex,"middle")
-          tmpHux <- tmpHux %>% set_top_border(l, every(n=1,from=colindex), 1) %>% set_bottom_border(l,colindex,1)
+          tmpHux = merge_cells(tmpHux, lr, colindex)
+          tmpHux = set_valign(tmpHux,lr,colindex,"middle")
+          tmpHux = tmpHux %>% set_top_border(l, every(n=1,from=colindex), 1) %>% set_bottom_border(l,colindex,1)
         }
       }
     }
@@ -181,7 +181,7 @@ mergeCells = function(labelledDataFrame) {
 #' @examples
 #' setwd(tempdir())
 #' mtcars %>% rownames_to_column() %>% arrange(gear,carb) %>% group_by(gear,carb) %>% saveMultiPage("carMultiTest",pageLength = 2)
-saveMultiPage <- function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
+saveMultiPage = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   # save the whole table
   saveTable(labelledDataFrame, filename, pageWidth, defaultFontSize, tableWidth, colWidths)
   height = .detectHeight(filename, pageWidth)
@@ -225,7 +225,7 @@ saveMultiPage <- function(labelledDataFrame, filename, pageWidth=5.9, pageLength
 #' setwd(tempdir())
 #' library(dplyr)
 #' mtcars %>% rownames_to_column() %>% arrange(gear,carb) %>% group_by(gear,carb) %>% saveMultiPageLandscape("carMultiTest",pageWidth=2,pageLength = 5.9)
-saveMultiPageLandscape <- function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
+saveMultiPageLandscape = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   pdfs = saveMultiPage(labelledDataFrame, filename, pageLength, pageWidth, defaultFontSize, tableWidth, colWidths)
   for (filename in pdfs) {
     pdf = normalizePath(paste0(filename,".pdf"),mustWork = FALSE)
@@ -235,7 +235,7 @@ saveMultiPageLandscape <- function(labelledDataFrame, filename, pageWidth=5.9, p
   }
 }
 
-.detectHeight <- function(filename, width) {
+.detectHeight = function(filename, width) {
   img.n=png::readPNG(
     normalizePath(paste0(filename,".png"),mustWork = FALSE),
     info=TRUE)

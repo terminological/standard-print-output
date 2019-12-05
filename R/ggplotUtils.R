@@ -6,7 +6,7 @@
 #' @export
 #' @examples
 #' ggplot()+scale_week_continuous()
-scale_week_continuous <- function() {
+scale_week_continuous = function() {
   return(list(
 	geom_vline(xintercept = 0, colour='grey'),
            geom_vline(xintercept = 24, colour='grey'),
@@ -31,7 +31,7 @@ scale_week_continuous <- function() {
 #' @export
 #' @examples
 #' ggplot()+scale_hours_continuous()
-scale_hours_continuous <- function() {
+scale_hours_continuous = function() {
   return(list(
     xlab("hours from midnight"),
     scale_x_continuous(breaks = seq(0, 24, 1))
@@ -45,7 +45,7 @@ scale_hours_continuous <- function() {
 #' @export
 #' @examples
 #' ggplot()+scale_day_of_year_discrete()
-scale_day_of_year_discrete <- function() {
+scale_day_of_year_discrete = function() {
   return(list(
     xlab("day of year"),
     scale_x_discrete(breaks =
@@ -61,7 +61,7 @@ scale_day_of_year_discrete <- function() {
 #' @export
 #' @examples
 #' ggplot()+scale_month_discrete()
-scale_month_discrete <- function() {
+scale_month_discrete = function() {
   return(list(
            xlab("month of year"),
            scale_x_discrete(breaks =
@@ -103,7 +103,7 @@ scale_month_discrete <- function() {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveFigure(filename="the_filename",maxWidth=4,maxHeight=4)
-saveFigure <- function(plot = last_plot(),filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxHeight) {
+saveFigure = function(plot = last_plot(),filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxHeight) {
   if (!capabilities()["cairo"] ) {
     stop("Needs cairo to work")
   }
@@ -234,7 +234,7 @@ saveSixthPageFigure = function(plot = last_plot(),filename, ...) {
 #' library(standardPrintOutput)
 #' theme_set(defaultFigureLayout())
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-defaultFigureLayout <- function(...) {
+defaultFigureLayout = function(...) {
   if(!("package:extrafont") %in% search()) {
     library(extrafont)
   }
@@ -261,7 +261,7 @@ defaultFigureLayout <- function(...) {
 #' library(ggplot2)
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point() + narrowAndTall()
-narrowAndTall <- function() {
+narrowAndTall = function() {
   theme(
     legend.position = "bottom",
     legend.direction = "horizontal",
@@ -282,7 +282,7 @@ narrowAndTall <- function() {
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point() + watermark()
 watermark = function(show = TRUE, lab = "DRAFT") {
   if (show) {
-    grb <- grid::grob(lab=lab, cl="watermark")
+    grb = grid::grob(lab=lab, cl="watermark")
     return(annotation_custom(grb,xmin=-Inf, ymin=-Inf, xmax=Inf, ymax=Inf))
   } else {
     return(geom_blank())
