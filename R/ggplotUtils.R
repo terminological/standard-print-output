@@ -116,7 +116,10 @@ saveFigure = function(plot = last_plot(),filename,maxWidth,maxHeight,aspectRatio
   ggplot2::ggsave(
     normalizePath(paste0(filename,".eps"),mustWork = FALSE), 
     plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_ps);
-  embedFonts(normalizePath(paste0(filename,".pdf"),mustWork = FALSE));
+  try(
+    embedFonts(normalizePath(paste0(filename,".pdf"),mustWork = FALSE)),
+    silent=TRUE
+  );
   # embedFonts(paste0(filename,".eps"));
 }
 
