@@ -30,7 +30,7 @@ defaultTableLayout = function(hux) {
 
 #' save labelled dataframe to html and pdf file silently
 #'
-#' @param labelledDataFrame e.g. dataframe %>% select("col 1 title"=col1)
+#' @param labelledDataFrame e.g. select(dataframe,"col 1 title"=col1)
 #' @param filename file of desired output without extension.
 #' @param pageWidth maximum width of the desired pdf output in inches (5.9)
 #' @param defaultFontSize default size of font in points (10)
@@ -97,7 +97,7 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
 
 #' save labelled dataframe to html and pdf file silently in rotated format for a landscape page
 #'
-#' @param labelledDataFrame e.g. dataframe %>% select("col 1 title"=col1)
+#' @param labelledDataFrame e.g. select(dataframe,"col 1 title"=col1)
 #' @param filename file of desired output without extension.
 #' @param pageLength maximum length of the page in inches (8)
 #' @param defaultFontSize default size of font in points (10)
@@ -126,7 +126,7 @@ saveTableLandscape = function(labelledDataframe, filename, pageLength=8, default
 
 #' prepare a huxtable with cells merged according to grouped colums
 #'
-#' @param labelledDataFrame e.g. dataframe %>% select("col 1 title"=col1)
+#' @param labelledDataFrame e.g. select(dataframe,"col 1 title"=col1)
 #' @import huxtable
 #' @import magrittr
 #' @keywords huxtable

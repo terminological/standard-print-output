@@ -24,7 +24,7 @@ saveTableLandscape(
 
 \item{colWidths}{a vector of relative column widths}
 
-\item{labelledDataFrame}{e.g. dataframe %>% select("col 1 title"=col1)}
+\item{labelledDataFrame}{e.g. select(dataframe,"col 1 title"=col1)}
 }
 \description{
 save labelled dataframe to html and pdf file silently in rotated format for a landscape page

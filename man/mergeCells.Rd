@@ -7,7 +7,7 @@
 mergeCells(labelledDataFrame)
 }
 \arguments{
-\item{labelledDataFrame}{e.g. dataframe %>% select("col 1 title"=col1)}
+\item{labelledDataFrame}{e.g. select(dataframe,"col 1 title"=col1)}
 }
 \description{
 prepare a huxtable with cells merged according to grouped colums
