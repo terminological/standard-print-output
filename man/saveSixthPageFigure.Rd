@@ -5,7 +5,7 @@
 \title{A standard max 3x3 plot size for a smaller plot
 maybe combined with narrowAndTall()}
 \usage{
-saveSixthPageFigure(plot = last_plot(), filename, ...)
+saveSixthPageFigure(plot, filename, ...)
 }
 \arguments{
 \item{plot}{a GGplot object or none}

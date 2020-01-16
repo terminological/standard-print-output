@@ -4,7 +4,7 @@
 \alias{saveFullPageFigureLandscape}
 \title{A standard 6x8 inch plot size for a full page in landscape format}
 \usage{
-saveFullPageFigureLandscape(plot = last_plot(), filename, ...)
+saveFullPageFigureLandscape(plot, filename, ...)
 }
 \arguments{
 \item{plot}{a GGplot object or none}

@@ -4,7 +4,7 @@
 \alias{saveHalfPageFigure}
 \title{A standard max 6x4 inch plot size for a half page}
 \usage{
-saveHalfPageFigure(plot = last_plot(), filename, ...)
+saveHalfPageFigure(plot, filename, ...)
 }
 \arguments{
 \item{plot}{a GGplot object or none}

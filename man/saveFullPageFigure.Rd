@@ -5,7 +5,7 @@
 \title{A standard 6x8 inch plot size for a full page
 This may be combined with narrowAndTall() to maximise plotting area}
 \usage{
-saveFullPageFigure(plot = last_plot(), filename, ...)
+saveFullPageFigure(plot, filename, ...)
 }
 \arguments{
 \item{plot}{a GGplot object or none}

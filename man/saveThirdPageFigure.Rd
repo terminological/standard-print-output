@@ -4,7 +4,7 @@
 \alias{saveThirdPageFigure}
 \title{A standard max 6x3 plot size for a third page}
 \usage{
-saveThirdPageFigure(plot = last_plot(), filename, ...)
+saveThirdPageFigure(plot, filename, ...)
 }
 \arguments{
 \item{plot}{a GGplot object or none}
