@@ -92,6 +92,7 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
 
   fs::file_delete(normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
   
+  return(tmp)
 }
 
 #' save labelled dataframe to html and pdf file silently in rotated format for a landscape page
@@ -109,7 +110,7 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
 #' setwd(tempdir())
 #' hux(iris) %>% saveTableLandscape("iris")
 saveTableLandscape = function(labelledDataframe, filename, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
-  saveTable(labelledDataFrame, filename, pageLength, defaultFontSize, tableWidth, colWidths)
+  tmp = saveTable(labelledDataFrame, filename, pageLength, defaultFontSize, tableWidth, colWidths)
   staplr::rotate_pdf(page_rotation = 270, 
                      input_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
                      output_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
@@ -120,6 +121,7 @@ saveTableLandscape = function(labelledDataframe, filename, pageLength=8, default
       ),270) %>% magick::image_write(
         normalizePath(paste0(filename,".png"),mustWork = FALSE)
       )
+  return(tmp)
 }
 
 #' prepare a huxtable with cells merged according to grouped colums
@@ -183,7 +185,7 @@ mergeCells = function(labelledDataFrame) {
 #' mtcars %>% rownames_to_column() %>% arrange(gear,carb) %>% group_by(gear,carb) %>% saveMultiPage("carMultiTest",pageLength = 2)
 saveMultiPage = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   # save the whole table
-  saveTable(labelledDataFrame, filename, pageWidth, defaultFontSize, tableWidth, colWidths)
+  tmp = saveTable(labelledDataFrame, filename, pageWidth, defaultFontSize, tableWidth, colWidths)
   height = .detectHeight(filename, pageWidth)
   pdfs = c(filename)
   if (height > pageLength) {
@@ -233,6 +235,7 @@ saveMultiPageLandscape = function(labelledDataFrame, filename, pageWidth=5.9, pa
     staplr::rotate_pdf(page_rotation = 270, input_filepath = pdf,output_filepath = pdf, overwrite = TRUE)
     magick::image_rotate(magick::image_read(png),270) %>% magick::image_write(png)
   }
+  return(pdfs)
 }
 
 .detectHeight = function(filename, width) {

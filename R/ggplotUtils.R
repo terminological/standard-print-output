@@ -103,7 +103,7 @@ scale_month_discrete = function() {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveFigure(filename="the_filename",maxWidth=4,maxHeight=4)
-saveFigure = function(plot = last_plot(),filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxHeight) {
+saveFigure = function(plot,filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxHeight) {
   if (!capabilities()["cairo"] ) {
     stop("Needs cairo to work")
   }
@@ -118,6 +118,7 @@ saveFigure = function(plot = last_plot(),filename,maxWidth,maxHeight,aspectRatio
     plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_ps);
   embedFonts(normalizePath(paste0(filename,".pdf"),mustWork = FALSE));
   # embedFonts(paste0(filename,".eps"));
+  return(plot)
 }
 
 #' A standard 6x8 inch plot size for a full page
@@ -135,7 +136,7 @@ saveFigure = function(plot = last_plot(),filename,maxWidth,maxHeight,aspectRatio
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveFullPageFigure(filename="the_filename")
-saveFullPageFigure = function(plot = last_plot(),filename, ...) {
+saveFullPageFigure = function(plot,filename, ...) {
   saveFigure(plot,filename,maxWidth=5.9, maxHeight=8, ...)
 }
 
@@ -153,7 +154,7 @@ saveFullPageFigure = function(plot = last_plot(),filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveFullPageLandscapeFigure(filename="the_filename")
-saveFullPageFigureLandscape = function(plot = last_plot(),filename, ...) {
+saveFullPageFigureLandscape = function(plot,filename, ...) {
   saveFigure(plot,filename,maxWidth=8, maxHeight=5.9, ...)
   staplr::rotate_pdf(page_rotation = 270, 
                    input_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
@@ -167,6 +168,7 @@ saveFullPageFigureLandscape = function(plot = last_plot(),filename, ...) {
   ) %>% magick::image_write(
     normalizePath(paste0(filename,".png"),mustWork = FALSE)
   )
+  return(plot)
 }
 
 #' A standard max 6x4 inch plot size for a half page
@@ -183,8 +185,8 @@ saveFullPageFigureLandscape = function(plot = last_plot(),filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveHalfPageFigure(filename="the_filename")
-saveHalfPageFigure = function(plot = last_plot(),filename, ...) {
-  saveFigure(plot,filename,maxWidth=5.9, maxHeight=4, ...)
+saveHalfPageFigure = function(plot,filename, ...) {
+  return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=4, ...))
 }
 
 #' A standard max 6x3 plot size for a third page
@@ -201,8 +203,8 @@ saveHalfPageFigure = function(plot = last_plot(),filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveThirdPageFigure(filename="the_filename")
-saveThirdPageFigure = function(plot = last_plot(),filename, ...) {
-  saveFigure(plot,filename,maxWidth=5.9, maxHeight=3, ...)
+saveThirdPageFigure = function(plot,filename, ...) {
+  return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=3, ...))
 }
 
 #' A standard max 3x3 plot size for a smaller plot
@@ -220,8 +222,8 @@ saveThirdPageFigure = function(plot = last_plot(),filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveSixthPageFigure(filename="the_filename")
-saveSixthPageFigure = function(plot = last_plot(),filename, ...) {
-  saveFigure(plot,filename,maxWidth=3, maxHeight=3, ...)
+saveSixthPageFigure = function(plot,filename, ...) {
+  return(saveFigure(plot,filename,maxWidth=3, maxHeight=3, ...))
 }
 
 #' A ggplot theme with standard print publication defaults with a focus on 10pt Arial as the default font
