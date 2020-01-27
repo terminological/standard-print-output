@@ -63,3 +63,35 @@ confidence = function(x, f=twoDp, ...) {
   tmp = t.test(x)
   return(paste0(f(tmp$conf.int[1],...)," — ",f(tmp$conf.int[2],...)))
 }
+
+
+#' Truncate a count
+#' 
+#' Truncate the results of a count using an "other..." category
+#' 
+#' @param df - a grouped df
+#' @param n the number of rows to keep
+#' @param countVar - the column containing the count, or in which the count is to be written
+#' @param label -  the name of the "Other..." category
+countWithOtherCategory = function(df, n, countVar, label="Other...") {
+  grps = df %>% groups()
+  if (length(grps) == 0) stop("data frame must be grouped")
+  countVar = ensym(countVar)
+  if (as.character(countVar) %in% colnames(df)) {
+    # there is a count column. 
+    df = df %>% group_by(!!!grps) %>% summarise(tmp_count = sum(!!countVar))
+  } else {
+    # there is no count column.
+    df = df %>% group_by(!!!grps) %>% summarise(tmp_count = n())
+  }
+  total = df %>% ungroup() %>% summarise(n = sum(tmp_count)) %>% pull(n)
+  df = df %>% arrange(desc(tmp_count)) %>% head(n)
+  other = total -  (df %>% ungroup() %>% summarise(n = sum(tmp_count)) %>% pull(n))
+  labels = c(sapply(grps,as.character))
+  values = data.frame(matrix(c(label,rep(NA,length(labels)-1)),1))
+  colnames(values) <- labels
+  values = values %>% mutate(tmp_count = other)
+  df = df %>% bind_rows(values) %>% rename(!!countVar := tmp_count)
+  
+  return(df)
+}
