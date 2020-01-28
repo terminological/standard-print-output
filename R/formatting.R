@@ -48,7 +48,7 @@ fourDp = function(x,unit="") {
 #' df %>% mutate(display = meanAndConfidence(x,fourDp,unit="cm"))
 meanAndConfidence = function(x, f=twoDp, ...) {
   tmp = t.test(x)
-  return(paste0(f(tmp$estimate[["mean of x"]],...)," (95% CI: ",f(tmp$conf.int[1],...),", ",f(tmp$conf.int[2],...),")"))
+  return(paste0(f(tmp$estimate[["mean of x"]],...)," (95% CI: ",f(tmp$conf.int[1],...)," \u2014 ",f(tmp$conf.int[2],...),")"))
 }
 
 #' confidence interval of mean using t-test
@@ -61,37 +61,47 @@ meanAndConfidence = function(x, f=twoDp, ...) {
 #' df %>% mutate(display = confidence(x))
 confidence = function(x, f=twoDp, ...) {
   tmp = t.test(x)
-  return(paste0(f(tmp$conf.int[1],...)," — ",f(tmp$conf.int[2],...)))
+  return(paste0(f(tmp$conf.int[1],...)," \u2014 ",f(tmp$conf.int[2],...)))
 }
 
 
-#' Truncate a count
+#' Truncate a dplyr summarisation using an "Other..." summary row
 #' 
-#' Truncate the results of a count using an "other..." category
+#' Sometimes when you have a lot of results you want to show a short version
+#' of the results with an "Other..." category. This function performs a summarisation and allows you to specify 
+#' the number of rows you want and something to sort the rows by. It will then give you
+#' strictly the top n results (ignoring ties) and group all the other results into a single summary row 
+#' entitled "Other..."
 #' 
-#' @param df - a grouped df
-#' @param n the number of rows to keep
-#' @param countVar - the column containing the count, or in which the count is to be written
-#' @param label -  the name of the "Other..." category
-countWithOtherCategory = function(df, n, countVar, label="Other...") {
+#' @param df - a grouped df - there must be some grouping for the summarise to return more than one row.
+#' @param n the number of rows to keep - the result will have one more row than this
+#' @param sortVar - the column containing the variable to sort by (syntax as in arrange(...))
+#' @param label -  the name of the "Other..." row
+#' @param ... - the arguments to the dplyr summarise(...)
+#' @import dplyr
+#' @export
+summariseTopN = function(df, n, sortVar, label="Other...", ...) {
   grps = df %>% groups()
-  if (length(grps) == 0) stop("data frame must be grouped")
-  countVar = ensym(countVar)
-  if (as.character(countVar) %in% colnames(df)) {
-    # there is a count column. 
-    df = df %>% group_by(!!!grps) %>% summarise(tmp_count = sum(!!countVar))
-  } else {
-    # there is no count column.
-    df = df %>% group_by(!!!grps) %>% summarise(tmp_count = n())
-  }
-  total = df %>% ungroup() %>% summarise(n = sum(tmp_count)) %>% pull(n)
-  df = df %>% arrange(desc(tmp_count)) %>% head(n)
-  other = total -  (df %>% ungroup() %>% summarise(n = sum(tmp_count)) %>% pull(n))
-  labels = c(sapply(grps,as.character))
-  values = data.frame(matrix(c(label,rep(NA,length(labels)-1)),1))
-  colnames(values) <- labels
-  values = values %>% mutate(tmp_count = other)
-  df = df %>% bind_rows(values) %>% rename(!!countVar := tmp_count)
+  sortVar = enquo(sortVar)
   
-  return(df)
+  if (length(grps) == 0) stop("data frame must be grouped")
+  out = df %>% select(!!!grps) %>% distinct()
+  
+  grpsList = sapply(grps,as.character)
+  otherGroup = data.frame(matrix(c(label,rep(NA,length(grpsList)-1)),1))
+  colnames(otherGroup) <- grpsList
+  
+  out = df %>% group_by(!!!grps) %>% summarize(...) %>% arrange(!!sortVar) %>% head(n)
+  others = df %>% anti_join(out, by=grpsList) %>% ungroup() %>% summarize(...)
+  
+  others = otherGroup %>% bind_cols(others)
+  suppressWarnings(
+    out = out %>% bind_rows(others)
+  )
+  
+  return(out %>% group_by(!!!grps))
+  
 }
+
+#' @export
+summarizeTopN = summariseTopN
