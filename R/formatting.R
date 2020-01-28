@@ -101,7 +101,7 @@ summariseTopN = function(df, n, sortVar, label="Other...", ...) {
     out = out %>% bind_rows(others)
   })
   
-  return(out %>% group_by(!!!grps))
+  return(out)
   
 }
 
