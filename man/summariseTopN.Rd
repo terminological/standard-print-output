@@ -24,3 +24,6 @@ the number of rows you want and something to sort the rows by. It will then give
 strictly the top n results (ignoring ties) and group all the other results into a single summary row 
 entitled "Other..."
 }
+\examples{
+diamonds \%>\% group_by(clarity) \%>\% summariseTopN(n=5, sortVar = desc(count), count = n(), avPrice = mean(price))
+}

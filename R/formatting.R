@@ -79,6 +79,8 @@ confidence = function(x, f=twoDp, ...) {
 #' @param label -  the name of the "Other..." row
 #' @param ... - the arguments to the dplyr summarise(...)
 #' @import dplyr
+#' @examples 
+#' diamonds %>% group_by(clarity) %>% summariseTopN(n=5, sortVar = desc(count), count = n(), avPrice = mean(price))
 #' @export
 summariseTopN = function(df, n, sortVar, label="Other...", ...) {
   grps = df %>% groups()
@@ -95,9 +97,9 @@ summariseTopN = function(df, n, sortVar, label="Other...", ...) {
   others = df %>% anti_join(out, by=grpsList) %>% ungroup() %>% summarize(...)
   
   others = otherGroup %>% bind_cols(others)
-  suppressWarnings(
+  suppressWarnings({
     out = out %>% bind_rows(others)
-  )
+  })
   
   return(out %>% group_by(!!!grps))
   
