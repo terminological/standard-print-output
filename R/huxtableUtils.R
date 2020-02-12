@@ -44,7 +44,7 @@ defaultTableLayout = function(hux) {
 #' hux(iris) %>% saveTable("iris")
 saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   if (is_hux(labelledDataframe)) {
-    tmp = labelledDataframe
+    tmp = labelledDataframe %>% collect()
   } else {
     tmp = mergeCells(labelledDataframe)
   }
@@ -140,7 +140,7 @@ mergeCells = function(labelledDataFrame) {
   grps = labelledDataFrame %>% groups()
   cols = lapply(colnames(labelledDataFrame),as.symbol)
   sel = c(grps,cols[!cols %in% grps])
-  hux = defaultTableLayout(huxtable(labelledDataFrame %>% arrange(!!!grps) %>% select(!!!sel),add_colnames = TRUE))
+  hux = defaultTableLayout(huxtable(labelledDataFrame %>% arrange(!!!grps) %>% select(!!!sel) %>% collect(),add_colnames = TRUE))
   tmpHux = hux
   for (colname in colnames(hux)) {
     if (colname %in% grps) {
