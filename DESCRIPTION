@@ -24,4 +24,7 @@ Imports:
     webshot,
     png,
     staplr,
-    magick
+    magick,
+    DiagrammeR,
+    DiagrammeRsvg,
+    rsvg

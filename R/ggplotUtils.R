@@ -210,6 +210,24 @@ saveThirdPageFigure = function(plot,filename, ...) {
   return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=3, ...))
 }
 
+#' A standard max 6x2 plot size for a quarter page
+#'
+#' @param filename base of target filename (excuding extension).
+#' @param plot a GGplot object or none
+#' @param ... passed to saveFigure()
+#' @keywords axes
+#' @import ggplot2
+#' @export
+#' @examples
+#' setwd(tempdir())
+#' library(ggplot2)
+#' library(standardPrintOutput)
+#' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+#' saveQuarterPageFigure(filename="the_filename")
+saveQuarterPageFigure = function(plot,filename, ...) {
+  return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=2, ...))
+}
+
 #' A standard max 3x3 plot size for a smaller plot
 #' maybe combined with narrowAndTall()
 #'

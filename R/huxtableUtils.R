@@ -182,8 +182,8 @@ mergeCells = function(labelledDataFrame) {
 #' @export
 #' @examples
 #' setwd(tempdir())
-#' mtcars %>% rownames_to_column() %>% arrange(gear,carb) %>% group_by(gear,carb) %>% saveMultiPage("carMultiTest",pageLength = 2)
-saveMultiPage = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
+#' mtcars %>% rownames_to_column() %>% arrange(gear,carb) %>% group_by(gear,carb) %>% saveMultiPageTable("carMultiTest",pageLength = 2)
+saveMultiPageTable = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   # save the whole table
   tmp = saveTable(labelledDataFrame, filename, pageWidth, defaultFontSize, tableWidth, colWidths)
   height = .detectHeight(filename, pageWidth)
@@ -226,9 +226,9 @@ saveMultiPage = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=
 #' @examples
 #' setwd(tempdir())
 #' library(dplyr)
-#' mtcars %>% rownames_to_column() %>% arrange(gear,carb) %>% group_by(gear,carb) %>% saveMultiPageLandscape("carMultiTest",pageWidth=2,pageLength = 5.9)
-saveMultiPageLandscape = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
-  pdfs = saveMultiPage(labelledDataFrame, filename, pageLength, pageWidth, defaultFontSize, tableWidth, colWidths)
+#' mtcars %>% rownames_to_column() %>% arrange(gear,carb) %>% group_by(gear,carb) %>% saveMultiPageTableLandscape("carMultiTest",pageWidth=2,pageLength = 5.9)
+saveMultiPageTableLandscape = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
+  pdfs = saveMultiPageTable(labelledDataFrame, filename, pageLength, pageWidth, defaultFontSize, tableWidth, colWidths)
   for (filename in pdfs) {
     pdf = normalizePath(paste0(filename,".pdf"),mustWork = FALSE)
     png = normalizePath(paste0(filename,".png"),mustWork = FALSE)
@@ -239,8 +239,26 @@ saveMultiPageLandscape = function(labelledDataFrame, filename, pageWidth=5.9, pa
 }
 
 .detectHeight = function(filename, width) {
+  return(width/.aspectRatio(filename))
+}
+
+.aspectRatio = function(filename) {
   img.n=png::readPNG(
     normalizePath(paste0(filename,".png"),mustWork = FALSE),
     info=TRUE)
-  return(attr(img.n,"info")$dim[2]/attr(img.n,"info")$dim[1]*width)
+  return(attr(img.n,"info")$dim[1]/attr(img.n,"info")$dim[2]) # width/height
+}
+
+.dimensions = function(filename) {
+  img.n=png::readPNG(
+    normalizePath(paste0(filename,".png"),mustWork = FALSE),
+    info=TRUE)
+  return(list(
+    width = attr(img.n,"info")$dim[1],
+    height = attr(img.n,"info")$dim[2]
+  ))
+}
+
+.detectWidth = function(filename, height) {
+  return(height*.aspectRatio(filename))
 }
