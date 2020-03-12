@@ -46,7 +46,7 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
   if (is_hux(labelledDataframe)) {
     tmp = labelledDataframe %>% collect()
   } else {
-    tmp = mergeCells(labelledDataframe)
+    tmp = mergeCells(labelledDataframe %>% collect())
   }
   # if (!is.null(caption)) tmp = tmp %>% set_caption(caption)
   if (!is.null(colWidths)) {
@@ -110,7 +110,7 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
 #' setwd(tempdir())
 #' hux(iris) %>% saveTableLandscape("iris")
 saveTableLandscape = function(labelledDataframe, filename, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
-  tmp = saveTable(labelledDataFrame, filename, pageLength, defaultFontSize, tableWidth, colWidths)
+  tmp = saveTable(labelledDataframe, filename, pageLength, defaultFontSize, tableWidth, colWidths)
   staplr::rotate_pdf(page_rotation = 270, 
                      input_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
                      output_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
