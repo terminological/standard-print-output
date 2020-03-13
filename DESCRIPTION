@@ -25,6 +25,4 @@ Imports:
     png,
     staplr,
     magick,
-    DiagrammeR,
-    DiagrammeRsvg,
-    rsvg
+    DiagrammeR
