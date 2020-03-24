@@ -1,3 +1,17 @@
+#' A map theme
+#' 
+#' @import ggplot2
+#' @export
+#' @examples
+#' ggplot()+mapTheme()
+mapTheme = function() {
+  return(theme(axis.text.x=element_blank(),
+         axis.text.y=element_blank(),
+         axis.ticks=element_blank(),
+         axis.title.x=element_blank(),
+         axis.title.y=element_blank()))
+}
+
 
 #' A standard X axis with hour from a sunday
 #'
