@@ -121,6 +121,8 @@ saveFigure = function(plot,filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxH
   if (!capabilities()["cairo"] ) {
     stop("Needs cairo to work")
   }
+  dir = dirname(normalizePath(paste0(filename,".pdf"),mustWork = FALSE))
+  if (!dir.exists(dir)) dir.create(dir,recursive = TRUE)
   ggplot2::ggsave(
     normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
     plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_pdf);
@@ -135,7 +137,11 @@ saveFigure = function(plot,filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxH
     silent=TRUE
   );
   # embedFonts(paste0(filename,".eps"));
-  return(plot)
+  if (isTRUE(getOption("knitr.in.progress"))) {
+    return(knitr::include_graphics(path = normalizePath(paste0(filename,".png"),mustWork = FALSE),auto_pdf = TRUE))
+  } else {
+    return(plot)
+  }
 }
 
 #' A standard 6x8 inch plot size for a full page
@@ -224,6 +230,24 @@ saveThirdPageFigure = function(plot,filename, ...) {
   return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=3, ...))
 }
 
+#' A standard max 6x6 plot size for a two third page
+#'
+#' @param filename base of target filename (excuding extension).
+#' @param plot a GGplot object or none
+#' @param ... passed to saveFigure()
+#' @keywords axes
+#' @import ggplot2
+#' @export
+#' @examples
+#' setwd(tempdir())
+#' library(ggplot2)
+#' library(standardPrintOutput)
+#' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+#' saveThirdPageFigure(filename="the_filename")
+saveTwoThirdPageFigure = function(plot,filename, ...) {
+  return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=6, ...))
+}
+
 #' A standard max 6x2 plot size for a quarter page
 #'
 #' @param filename base of target filename (excuding extension).
@@ -282,11 +306,85 @@ defaultFigureLayout = function(...) {
       theme_bw(base_size=10, base_family = "Arial", ...)+
       theme(
         plot.title=element_text(size=10,hjust=0.5),
-        axis.title=element_text(size=10),
-        axis.text=element_text(size=10),
-        axis.text.x=element_text(angle = 30, hjust = 1)
+        axis.title=element_text(size=7),
+        axis.text=element_text(size=6),
+        axis.text.x=element_text(angle = 30, hjust = 1),
+        strip.text = element_text(margin = margin(.05, 0, .05, 0, "cm"), size=6),
+        strip.background = element_rect(fill = "#F8F8F8"),
+        legend.title = element_text(size=7),
+        legend.text = element_text(size=6),
+        legend.margin=margin(t = 0, unit='cm')
       )
   )
+}
+
+#' Set the ggplot default theme
+#' 
+#' @keywords plot theme
+#' @export
+setDefaults = function() {
+  ggplot2::theme_set(defaultFigureLayout())
+}
+
+#' A ggplot theme with standard print publication defaults with a focus on 10pt Arial as the default font
+#' 
+#' @keywords plot theme
+#' @export
+#' @examples
+#' library(ggplot2)
+#' library(standardPrintOutput)
+#' theme_set(defaultFigureLayout())
+#' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+defaultMapLayout = function(...) {
+  defaultFigureLayout()+mapTheme()
+}
+
+#' A ggplot theme modification for graphs that need to be narrower than defaults
+#' 
+#' @keywords graph layout
+#' @import ggplot2
+#' @export
+#' @examples
+#' library(ggplot2)
+#' library(standardPrintOutput)
+#' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point() + narrower()
+narrower = function() {
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal"
+  );
+}
+
+#' A ggplot theme modification for graphs that need to be narrower than defaults
+#' 
+#' @keywords graph layout
+#' @import ggplot2
+#' @export
+#' @examples
+#' library(ggplot2)
+#' library(standardPrintOutput)
+#' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point() + narrower()
+hideX = function() {
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+  );
+}
+
+#' A ggplot theme modification for graphs that need to be narrower than defaults
+#' 
+#' @keywords graph layout
+#' @import ggplot2
+#' @export
+#' @examples
+#' library(ggplot2)
+#' library(standardPrintOutput)
+#' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point() + narrower()
+hideY = function() {
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+  );
 }
 
 #' A ggplot theme modification for graphs that need to be narrower and taller than defaults

@@ -2,13 +2,14 @@
 #' A tidy article theme for huxtables that works with google docs
 #'
 #' Once copied and pasted table needs to have leading spaces removed in google docs
-#' @param ... a huxtable object
+#' @param hux a huxtable object
+#' @param defaultFontSize default size of font in points (10)
 #' @keywords huxtable
 #' @import huxtable
 #' @export
 #' @examples
 #' hux = huxtable(dataframe %>% select("col 1 title"=col1)) %>% defaultTableLayout()
-defaultTableLayout = function(hux) {
+defaultTableLayout = function(hux, defaultFontSize=10) {
   if(!("Arial" %in% extrafont::fonts())) {
     stop("Arial is not installed")
   }
@@ -17,7 +18,7 @@ defaultTableLayout = function(hux) {
   #  set_all_padding(everywhere,everywhere,0) %>%
   #  set_valign(everywhere,everywhere,"top") )
   return( hux %>%
-            set_font_size(everywhere,everywhere,10) %>%
+            set_font_size(everywhere,everywhere,defaultFontSize) %>%
             set_font(everywhere,everywhere,"Arial") %>%
             set_top_border(1, everywhere, 2) %>%
             set_bottom_border(1, everywhere, 1) %>%
@@ -34,7 +35,7 @@ defaultTableLayout = function(hux) {
 #' @param filename file of desired output without extension.
 #' @param pageWidth maximum width of the desired pdf output in inches (5.9)
 #' @param defaultFontSize default size of font in points (10)
-#' @param tableWidth width of the table in inches or NULL to fit contents automatically
+#' @param tableWidth width of the table see ?huxtable::set_width
 #' @param colWidths a vector of relative column widths
 #' @keywords huxtable webshot
 #' @import huxtable
@@ -46,17 +47,23 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
   if (is_hux(labelledDataframe)) {
     tmp = labelledDataframe %>% collect()
   } else {
-    tmp = mergeCells(labelledDataframe %>% collect())
+    tmp = mergeCells(labelledDataframe %>% collect(), defaultFontSize)
   }
   # if (!is.null(caption)) tmp = tmp %>% set_caption(caption)
   if (!is.null(colWidths)) {
-    tmp = tmp %>% set_col_width(everywhere,value=colWidths)
+    tmp = tmp %>% set_col_width(everywhere,value=colWidths/sum(colWidths))
   }
   if (!is.null(tableWidth)) {
-    tmp = tmp %>% set_width(tableWidth/pageWidth)
+    tmp = tmp %>% set_width(tableWidth)
   } else {
     tmp = tmp %>% set_width("auto")
   }
+  
+  tmp2 = tmp
+  
+  ## Do Png output
+  
+  attr(tmp,"font_size") = ifelse(is.na(attr(tmp,"font_size")),defaultFontSize,attr(tmp,"font_size"))
   
   write(
     paste0("<html><head><meta charset='UTF-8'></head><body>",
@@ -67,23 +74,23 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
     ),
     file=normalizePath(paste0(filename,".html"),mustWork = FALSE))
   
-  attr(tmp,"font_size") = ifelse(is.na(attr(tmp,"font_size")),defaultFontSize,attr(tmp,"font_size"))*2/3
-
-  # tableWidth = tableWidth-(ncol(tmp)*0.1) # adjust for
-  write(
-    paste0("<html><head><meta charset='UTF-8'></head><body>",
-    stringr::str_remove(
-      tmp %>% to_html(),
-      stringr::fixed("margin-bottom: 2em; margin-top: 2em;")),
-    "</body></html>"
-    ),
-    file=normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
-  
   webshot::webshot(
     url=paste0("file://",normalizePath(paste0(filename,".html"),mustWork = FALSE)),
     file=normalizePath(paste0(filename,".png"),mustWork = FALSE),
     vwidth=pageWidth*96,vheight=10,zoom=300/96)
-  # webshot::resize(paste0(filename,'.png'),paste0(96/300*100,"%"))
+  
+  ## Do pdf output
+  
+  attr(tmp2,"font_size") = ifelse(is.na(attr(tmp2,"font_size")),defaultFontSize,attr(tmp2,"font_size"))*2/3
+  
+  write(
+    paste0("<html><head><meta charset='UTF-8'></head><body>",
+    stringr::str_remove(
+      tmp2 %>% to_html(),
+      stringr::fixed("margin-bottom: 2em; margin-top: 2em;")),
+    "</body></html>"
+    ),
+    file=normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
   
   webshot::webshot(
     url=paste0("file://",normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE)),
@@ -92,7 +99,11 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
 
   fs::file_delete(normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
   
-  return(tmp)
+  if (isTRUE(getOption("knitr.in.progress"))) {
+    return(knitr::include_graphics(path = normalizePath(paste0(filename,".png"),mustWork = FALSE),auto_pdf = TRUE))
+  } else {
+    return(tmp)
+  }
 }
 
 #' save labelled dataframe to html and pdf file silently in rotated format for a landscape page
@@ -127,6 +138,7 @@ saveTableLandscape = function(labelledDataframe, filename, pageLength=8, default
 #' prepare a huxtable with cells merged according to grouped colums
 #'
 #' @param labelledDataFrame e.g. select(dataframe,"col 1 title"=col1)
+#' @param defaultFontSize the defaul font size
 #' @import huxtable
 #' @import magrittr
 #' @keywords huxtable
@@ -136,11 +148,11 @@ saveTableLandscape = function(labelledDataframe, filename, pageLength=8, default
 #' mergeCells(iris %>% group_by(Species,Petal.Width) %>% summarise(count = n()))
 #' mergeCells(mtcars %>% rownames_to_column() %>% group_by(gear,carb))
 #' mtcars %>% rownames_to_column() %>% group_by(gear,carb) %>% mergeCells() %>% saveTable("cars")
-mergeCells = function(labelledDataFrame) {
+mergeCells = function(labelledDataFrame,defaultFontSize=10) {
   grps = labelledDataFrame %>% groups()
   cols = lapply(colnames(labelledDataFrame),as.symbol)
   sel = c(grps,cols[!cols %in% grps])
-  hux = defaultTableLayout(huxtable(labelledDataFrame %>% arrange(!!!grps) %>% select(!!!sel) %>% collect(),add_colnames = TRUE))
+  hux = defaultTableLayout(huxtable(labelledDataFrame %>% arrange(!!!grps) %>% select(!!!sel) %>% collect(),add_colnames = TRUE),defaultFontSize)
   tmpHux = hux
   for (colname in colnames(hux)) {
     if (colname %in% grps) {
