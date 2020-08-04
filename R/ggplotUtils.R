@@ -435,3 +435,23 @@ watermark = function(show = TRUE, lab = "DRAFT") {
 labelInPoints = function(pts) {
   return (pts/ggplot2:::.pt/(96/72))
 }
+
+#' A label annotation in the corner of a plot
+#' 
+#' @keywords graph layout
+#' @import ggplot2
+#' @export
+#' @param text the text of the label (may be a vector)
+#' @param pos one of NE, NW, SW, SE
+#' @param pts size of text in points
+#' @examples
+#' ...+cornerAnnotation(c("line 1","line 2"),pos="SW",pts=10)
+cornerAnnotation = function(text, pos = "NE", pts=8) {
+  label4 = paste0(text,collapse = "\n")
+  if (stringr::str_detect(pos,"N|n")) x_pos = Inf
+  else x_pos = -Inf
+  if (stringr::str_detect(pos,"E|e")) y_pos = Inf
+  else y_pos = -Inf
+  return(annotate(geom = "label", x = x_pos, y = y_pos, label = label4, fill=NA, label.size=0, label.padding = unit(2, "lines"),hjust="inward", vjust="inward",size=standardPrintOutput::labelInPoints(pts)))
+}
+  
