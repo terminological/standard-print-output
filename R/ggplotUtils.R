@@ -138,7 +138,12 @@ saveFigure = function(plot,filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxH
   );
   # embedFonts(paste0(filename,".eps"));
   if (isTRUE(getOption("knitr.in.progress"))) {
-    return(knitr::include_graphics(path = normalizePath(paste0(filename,".png"),mustWork = FALSE),auto_pdf = TRUE))
+    hidefigs = getOption("spo.hidefigures",FALSE)
+    if (hidefigs) {
+      return(knitr::asis_output(paste0("INSERT FIGURE HERE: ",basename(filename),"\n\n")))
+    } else {
+      return(knitr::include_graphics(path = normalizePath(paste0(filename,".png"),mustWork = FALSE),auto_pdf = TRUE))
+    }
   } else {
     return(plot)
   }
@@ -285,6 +290,28 @@ saveSixthPageFigure = function(plot,filename, ...) {
   return(saveFigure(plot,filename,maxWidth=3, maxHeight=3, ...))
 }
 
+
+#' A standard max 3x3 plot size for a smaller plot
+#' maybe combined with narrowAndTall()
+#'
+#' @param filename base of target filename (excuding extension).
+#' @param plot a GGplot object or none
+#' @param ... passed to saveFigure()
+#' @keywords axes
+#' @import ggplot2
+#' @export
+#' @examples
+#' setwd(tempdir())
+#' library(ggplot2)
+#' library(standardPrintOutput)
+#' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+#' saveSixthPageFigure(filename="the_filename")
+saveSlideFigure = function(plot,filename, ...) {
+  return(saveFigure(plot,filename,maxWidth=12, maxHeight=6, ...))
+}
+
+
+
 #' A ggplot theme with standard print publication defaults with a focus on 10pt Arial as the default font
 #' 
 #' @keywords plot theme
@@ -306,13 +333,14 @@ defaultFigureLayout = function(...) {
       theme_bw(base_size=10, base_family = "Arial", ...)+
       theme(
         plot.title=element_text(size=10,hjust=0.5),
-        axis.title=element_text(size=7),
-        axis.text=element_text(size=6),
+        plot.subtitle = element_text(size=8,hjust=0.5),
+        axis.title=element_text(size=8),
+        axis.text=element_text(size=8),
         axis.text.x=element_text(angle = 30, hjust = 1),
-        strip.text = element_text(margin = margin(.05, 0, .05, 0, "cm"), size=6),
+        strip.text = element_text(margin = margin(.05, 0, .05, 0, "cm"), size=8),
         strip.background = element_rect(fill = "#F8F8F8"),
-        legend.title = element_text(size=7),
-        legend.text = element_text(size=6),
+        legend.title = element_text(size=8),
+        legend.text = element_text(size=8),
         legend.margin=margin(t = 0, unit='cm')
       )
   )
@@ -351,7 +379,8 @@ defaultMapLayout = function(...) {
 narrower = function() {
   theme(
     legend.position = "bottom",
-    legend.direction = "horizontal"
+    legend.direction = "horizontal",
+    legend.box="vertical"
   );
 }
 
@@ -400,8 +429,21 @@ narrowAndTall = function() {
   theme(
     legend.position = "bottom",
     legend.direction = "horizontal",
-    axis.text.x=element_text(angle = 60, hjust = 1)
+    axis.text.x=element_text(angle = 60, hjust = 1),
+    legend.box="vertical"
   );
+}
+
+
+smallLegend <- function(pointSize = 0.75, textSize = 8, spaceLegend = 0.2) {
+  return(list(
+    guides(shape = guide_legend(override.aes = list(size = pointSize)),
+           color = guide_legend(override.aes = list(size = pointSize))),
+    theme(legend.title = element_text(size = textSize), 
+          legend.text  = element_text(size = textSize),
+          legend.key.size = unit(spaceLegend, "lines"),
+          legend.box.margin = margin())
+  ))
 }
 
 #' A ggplot annotation layer that puts a watermark on a graph
@@ -448,10 +490,57 @@ labelInPoints = function(pts) {
 #' ...+cornerAnnotation(c("line 1","line 2"),pos="SW",pts=10)
 cornerAnnotation = function(text, pos = "NE", pts=8) {
   label4 = paste0(text,collapse = "\n")
-  if (stringr::str_detect(pos,"N|n")) x_pos = Inf
-  else x_pos = -Inf
-  if (stringr::str_detect(pos,"E|e")) y_pos = Inf
+  if (stringr::str_detect(pos,"N|n")) y_pos = Inf
   else y_pos = -Inf
+  if (stringr::str_detect(pos,"E|e")) x_pos = Inf
+  else x_pos = -Inf
   return(annotate(geom = "label", x = x_pos, y = y_pos, label = label4, fill=NA, label.size=0, label.padding = unit(2, "lines"),hjust="inward", vjust="inward",size=standardPrintOutput::labelInPoints(pts)))
 }
   
+#' A simple table as a ggplot patchwork object, no customisation allowed
+#' 
+#' @keywords graph layout
+#' @import ggplot2
+#' @export
+#' @param df the dataframe with the table data
+#' @param pts text size
+#' @examples
+#' ...+simpleFigureTable(tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
+simpleFigureTable = function(df, pts=8, unwrapped = FALSE) {
+  p = suppressWarnings(suppressMessages({
+    ttheme = gridExtra::ttheme_minimal(
+      base_size = pts, base_colour = "black", base_family = "Arial", 
+      parse = FALSE, padding = unit(c(4, 1.5), "mm"), 
+      core=list(fg_params=list(hjust=0, x=0.1)),
+      colhead=list(fg_params=list(hjust=0, x=0.1))
+    )
+    g = gridExtra::tableGrob(d = df,rows = NULL,theme = ttheme)
+    g <- gtable::gtable_add_grob(g,
+                                 grobs = grid::segmentsGrob( # line across the bottom
+                                   x0 = unit(0,"npc"),
+                                   y0 = unit(0,"npc"),
+                                   x1 = unit(1,"npc"),
+                                   y1 = unit(0,"npc"),
+                                   gp = grid::gpar(lwd = 2.0)),
+                                 t = nrow(g), l = 1, r = ncol(g))
+    g <- gtable::gtable_add_grob(g,
+                                 grobs = grid::grobTree(
+                                   grid::segmentsGrob( # line across the bottom
+                                     x0 = unit(0,"npc"),
+                                     y0 = unit(1,"npc"),
+                                     x1 = unit(1,"npc"),
+                                     y1 = unit(1,"npc"),
+                                     gp = grid::gpar(lwd = 2.0)),
+                                   grid::segmentsGrob( # line across the bottom
+                                     x0 = unit(0,"npc"),
+                                     y0 = unit(0,"npc"),
+                                     x1 = unit(1,"npc"),
+                                     y1 = unit(0,"npc"),
+                                     gp = grid::gpar(lwd = 1.0))
+                                 ),
+                                 t = 1, l = 1, r = ncol(g))
+    if(!unwrapped) return(patchwork::wrap_ggplot_grob(g))
+    g
+  }))
+  return(p)
+}

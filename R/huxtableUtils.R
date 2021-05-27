@@ -24,8 +24,8 @@ defaultTableLayout = function(hux, defaultFontSize=10) {
             set_bottom_border(1, everywhere, 1) %>%
             set_bottom_border(nrow(hux), everywhere, 1) %>%
             set_wrap(TRUE) %>%
-            set_top_padding(everywhere,everywhere,"1pt") %>%
-            set_bottom_padding(everywhere,everywhere,"0pt") %>%
+            set_top_padding(everywhere,everywhere,1) %>%
+            set_bottom_padding(everywhere,everywhere,0) %>%
             set_valign(everywhere,everywhere,"top") )
 }
 
@@ -56,7 +56,21 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
   if (!is.null(tableWidth)) {
     tmp = tmp %>% set_width(tableWidth)
   } else {
-    tmp = tmp %>% set_width("auto")
+    if (isTRUE(getOption("knitr.in.progress"))) {
+      fmt <- rmarkdown::default_output_format(knitr::current_input())$name
+      if (fmt == "word_document"){
+        # set width to 100% for word documents as auto doesn;t work 
+        tmp = tmp %>% set_width(1)
+      } else {
+        # for latex etc the table will be a pdf of html table do this 
+        # option relevant to html
+        tmp = tmp %>% set_width("auto")
+      }
+    } else {
+      # we are in RStudio most likely the width is irrelevant
+      # TODO: tidy up required here.
+      tmp = tmp %>% set_width("auto")
+    }
   }
   
   tmp2 = tmp
@@ -100,7 +114,16 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
   fs::file_delete(normalizePath(paste0(filename,".tmp.html"),mustWork = FALSE))
   
   if (isTRUE(getOption("knitr.in.progress"))) {
-    return(knitr::include_graphics(path = normalizePath(paste0(filename,".png"),mustWork = FALSE),auto_pdf = TRUE))
+    fmt <- rmarkdown::default_output_format(knitr::current_input())$name
+    # if (fmt == "pdf_document"){
+    #   #...
+    # }
+    # 
+    if (fmt == "word_document"){
+      return(as_flextable(tmp))
+    } else {
+      return(knitr::include_graphics(path = normalizePath(paste0(filename,".png"),mustWork = FALSE),auto_pdf = TRUE))
+    }
   } else {
     return(tmp)
   }
@@ -154,28 +177,43 @@ mergeCells = function(labelledDataFrame,defaultFontSize=10) {
   sel = c(grps,cols[!cols %in% grps])
   hux = defaultTableLayout(huxtable(labelledDataFrame %>% arrange(!!!grps) %>% select(!!!sel) %>% collect(),add_colnames = TRUE),defaultFontSize)
   tmpHux = hux
-  for (colname in colnames(hux)) {
-    if (colname %in% grps) {
-      for (tt in unique(hux[[colname]][-1])) {
-
-        colindex = grep(colname, colnames(hux))
-        s = seq(1,length(hux[[colname]]))
-        matches = (hux[[colname]] == tt)
-        firsts = matches & !c(FALSE,(matches[seq_len(length(matches)-1)]))
-        lasts = matches & !c(matches[-1],FALSE)
-        # print(firsts)
-        # print(lasts)
-        for (i in seq(1,length(s[firsts]))) {
-          l = s[firsts][i]
-          r = s[lasts][i]
-          lr = seq(l,r)
-          tmpHux = merge_cells(tmpHux, lr, colindex)
-          tmpHux = set_valign(tmpHux,lr,colindex,"middle")
-          tmpHux = tmpHux %>% set_top_border(l, every(n=1,from=colindex), 1) %>% set_bottom_border(l,colindex,1)
-        }
-      }
+  
+  while (length(grps)>0) {
+    mergeCol = grps %>% tail(1)
+    for( mergeRows in (tmpHux %>% group_by(!!!grps) %>% group_data() %>% pull(.rows))) {
+      #browser()
+      colindex = grep(as_label(mergeCol[[1]]), colnames(hux))
+      l = min(mergeRows)
+      lr = c(min(mergeRows),max(mergeRows))
+      tmpHux = huxtable::merge_cells(tmpHux,row=lr, col=colindex)
+      tmpHux = set_valign(tmpHux,lr,colindex,"middle")
+      tmpHux = tmpHux %>% set_top_border(l, final(ncol(tmpHux)-colindex+1), 1) #%>% set_bottom_border(l, colindex,1)
     }
+    grps = grps %>% head(-1)
   }
+  
+  # for (colname in colnames(hux)) {
+  #   if (colname %in% grps) {
+  #     for (tt in unique(hux[[colname]][-1])) {
+  # 
+  #       colindex = grep(colname, colnames(hux))
+  #       s = seq(1,length(hux[[colname]]))
+  #       matches = (hux[[colname]] == tt)
+  #       firsts = matches & !c(FALSE,(matches[seq_len(length(matches)-1)]))
+  #       lasts = matches & !c(matches[-1],FALSE)
+  #       # print(firsts)
+  #       # print(lasts)
+  #       for (i in seq(1,length(s[firsts]))) {
+  #         l = s[firsts][i]
+  #         r = s[lasts][i]
+  #         lr = seq(l,r)
+  #         tmpHux = merge_cells(tmpHux, lr, colindex)
+  #         tmpHux = set_valign(tmpHux,lr,colindex,"middle")
+  #         tmpHux = tmpHux %>% set_top_border(l, every(n=1,from=colindex), 1) %>% set_bottom_border(l,colindex,1)
+  #       }
+  #     }
+  #   }
+  # }
   return(tmpHux)
 }
 

@@ -25,4 +25,5 @@ Imports:
     png,
     staplr,
     magick,
-    DiagrammeR
+    DiagrammeR,
+    flextable
