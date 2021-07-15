@@ -117,7 +117,7 @@ scale_month_discrete = function() {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveFigure(filename="the_filename",maxWidth=4,maxHeight=4)
-saveFigure = function(plot,filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxHeight) {
+saveFigure = function(plot,filename = tempfile(),maxWidth,maxHeight,aspectRatio=maxWidth/maxHeight) {
   if (!capabilities()["cairo"] ) {
     stop("Needs cairo to work")
   }
@@ -125,13 +125,13 @@ saveFigure = function(plot,filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxH
   if (!dir.exists(dir)) dir.create(dir,recursive = TRUE)
   ggplot2::ggsave(
     normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
-    plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_pdf);
+    plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_pdf, bg = "transparent");
   ggplot2::ggsave(
     normalizePath(paste0(filename,".png"),mustWork = FALSE), 
-    plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), dpi=300, type = "cairo");
+    plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), dpi=300, type = "cairo", bg = "transparent");
   ggplot2::ggsave(
     normalizePath(paste0(filename,".eps"),mustWork = FALSE), 
-    plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_ps);
+    plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), device = cairo_ps, bg = "transparent");
   try(
     embedFonts(normalizePath(paste0(filename,".pdf"),mustWork = FALSE)),
     silent=TRUE
@@ -164,7 +164,7 @@ saveFigure = function(plot,filename,maxWidth,maxHeight,aspectRatio=maxWidth/maxH
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveFullPageFigure(filename="the_filename")
-saveFullPageFigure = function(plot,filename, ...) {
+saveFullPageFigure = function(plot,filename = tempfile(), ...) {
   saveFigure(plot,filename,maxWidth=5.9, maxHeight=8, ...)
 }
 
@@ -182,7 +182,7 @@ saveFullPageFigure = function(plot,filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveFullPageLandscapeFigure(filename="the_filename")
-saveFullPageFigureLandscape = function(plot,filename, ...) {
+saveFullPageFigureLandscape = function(plot,filename = tempfile(), ...) {
   saveFigure(plot,filename,maxWidth=8, maxHeight=5.9, ...)
   staplr::rotate_pdf(page_rotation = 270, 
                    input_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
@@ -213,7 +213,7 @@ saveFullPageFigureLandscape = function(plot,filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveHalfPageFigure(filename="the_filename")
-saveHalfPageFigure = function(plot,filename, ...) {
+saveHalfPageFigure = function(plot,filename = tempfile(), ...) {
   return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=4, ...))
 }
 
@@ -231,7 +231,7 @@ saveHalfPageFigure = function(plot,filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveThirdPageFigure(filename="the_filename")
-saveThirdPageFigure = function(plot,filename, ...) {
+saveThirdPageFigure = function(plot,filename = tempfile(), ...) {
   return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=3, ...))
 }
 
@@ -249,7 +249,7 @@ saveThirdPageFigure = function(plot,filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveThirdPageFigure(filename="the_filename")
-saveTwoThirdPageFigure = function(plot,filename, ...) {
+saveTwoThirdPageFigure = function(plot,filename = tempfile(), ...) {
   return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=6, ...))
 }
 
@@ -267,7 +267,7 @@ saveTwoThirdPageFigure = function(plot,filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveQuarterPageFigure(filename="the_filename")
-saveQuarterPageFigure = function(plot,filename, ...) {
+saveQuarterPageFigure = function(plot,filename = tempfile(), ...) {
   return(saveFigure(plot,filename,maxWidth=5.9, maxHeight=2, ...))
 }
 
@@ -286,7 +286,7 @@ saveQuarterPageFigure = function(plot,filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveSixthPageFigure(filename="the_filename")
-saveSixthPageFigure = function(plot,filename, ...) {
+saveSixthPageFigure = function(plot,filename = tempfile(), ...) {
   return(saveFigure(plot,filename,maxWidth=3, maxHeight=3, ...))
 }
 
@@ -306,7 +306,7 @@ saveSixthPageFigure = function(plot,filename, ...) {
 #' library(standardPrintOutput)
 #' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' saveSixthPageFigure(filename="the_filename")
-saveSlideFigure = function(plot,filename, ...) {
+saveSlideFigure = function(plot,filename = tempfile(), ...) {
   return(saveFigure(plot,filename,maxWidth=12, maxHeight=6, ...))
 }
 
@@ -336,12 +336,14 @@ defaultFigureLayout = function(...) {
         plot.subtitle = element_text(size=8,hjust=0.5),
         axis.title=element_text(size=8),
         axis.text=element_text(size=8),
-        axis.text.x=element_text(angle = 30, hjust = 1),
+        axis.text.x.bottom =element_text(angle = 30, hjust = 1, vjust=1),
+        axis.text.x.top=element_text(angle = 30, hjust = 0, vjust = 0),
         strip.text = element_text(margin = margin(.05, 0, .05, 0, "cm"), size=8),
         strip.background = element_rect(fill = "#F8F8F8"),
         legend.title = element_text(size=8),
         legend.text = element_text(size=8),
-        legend.margin=margin(t = 0, unit='cm')
+        legend.margin=margin(t = 0, unit='cm'),
+        plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
       )
   )
 }
@@ -397,6 +399,8 @@ hideX = function() {
   theme(
     axis.title.x = element_blank(),
     axis.text.x = element_blank(),
+    axis.text.x.bottom = element_blank(),
+    axis.text.x.top = element_blank()
   );
 }
 
@@ -413,6 +417,8 @@ hideY = function() {
   theme(
     axis.title.y = element_blank(),
     axis.text.y = element_blank(),
+    axis.text.y.left = element_blank(),
+    axis.text.y.right = element_blank()
   );
 }
 
@@ -429,7 +435,8 @@ narrowAndTall = function() {
   theme(
     legend.position = "bottom",
     legend.direction = "horizontal",
-    axis.text.x=element_text(angle = 60, hjust = 1),
+    axis.text.x.top=element_text(angle = 60, hjust = 0, vjust = 0),
+    axis.text.x.bottom=element_text(angle = 60, hjust = 1, vjust=1),
     legend.box="vertical"
   );
 }

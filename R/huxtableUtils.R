@@ -43,7 +43,7 @@ defaultTableLayout = function(hux, defaultFontSize=10) {
 #' @examples
 #' setwd(tempdir())
 #' hux(iris) %>% saveTable("iris")
-saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
+saveTable = function(labelledDataframe, filename = tempfile(), pageWidth=5.9, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   if (is_hux(labelledDataframe)) {
     tmp = labelledDataframe %>% collect()
   } else {
@@ -121,6 +121,8 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
     # 
     if (fmt == "word_document"){
       return(as_flextable(tmp))
+    } else if (stringr::str_detect(fmt,"html")) {
+      return(knitr::raw_html(tmp %>% to_html()))
     } else {
       return(knitr::include_graphics(path = normalizePath(paste0(filename,".png"),mustWork = FALSE),auto_pdf = TRUE))
     }
@@ -143,7 +145,7 @@ saveTable = function(labelledDataframe, filename, pageWidth=5.9, defaultFontSize
 #' @examples
 #' setwd(tempdir())
 #' hux(iris) %>% saveTableLandscape("iris")
-saveTableLandscape = function(labelledDataframe, filename, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
+saveTableLandscape = function(labelledDataframe, filename = tempfile(), pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   tmp = saveTable(labelledDataframe, filename, pageLength, defaultFontSize, tableWidth, colWidths)
   staplr::rotate_pdf(page_rotation = 270, 
                      input_filepath = normalizePath(paste0(filename,".pdf"),mustWork = FALSE), 
@@ -233,7 +235,7 @@ mergeCells = function(labelledDataFrame,defaultFontSize=10) {
 #' @examples
 #' setwd(tempdir())
 #' mtcars %>% rownames_to_column() %>% arrange(gear,carb) %>% group_by(gear,carb) %>% saveMultiPageTable("carMultiTest",pageLength = 2)
-saveMultiPageTable = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
+saveMultiPageTable = function(labelledDataFrame, filename = tempfile(), pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   # save the whole table
   tmp = saveTable(labelledDataFrame, filename, pageWidth, defaultFontSize, tableWidth, colWidths)
   height = .detectHeight(filename, pageWidth)
@@ -277,7 +279,7 @@ saveMultiPageTable = function(labelledDataFrame, filename, pageWidth=5.9, pageLe
 #' setwd(tempdir())
 #' library(dplyr)
 #' mtcars %>% rownames_to_column() %>% arrange(gear,carb) %>% group_by(gear,carb) %>% saveMultiPageTableLandscape("carMultiTest",pageWidth=2,pageLength = 5.9)
-saveMultiPageTableLandscape = function(labelledDataFrame, filename, pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
+saveMultiPageTableLandscape = function(labelledDataFrame, filename = tempfile(), pageWidth=5.9, pageLength=8, defaultFontSize=10, tableWidth=NULL, colWidths = NULL) {
   pdfs = saveMultiPageTable(labelledDataFrame, filename, pageLength, pageWidth, defaultFontSize, tableWidth, colWidths)
   for (filename in pdfs) {
     pdf = normalizePath(paste0(filename,".pdf"),mustWork = FALSE)
